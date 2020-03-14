@@ -1,0 +1,5 @@
+#!/bin/bash
+
+# Uses entr to invoke poddown when Newsboat queue is updated.
+
+echo ~/.local/share/newsboat/queue | entr -p poddown #2>/dev/null

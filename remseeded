@@ -1,0 +1,41 @@
+#!/bin/bash
+
+# Remove all seeded (to ratio 1.0) torrents and exit transmission-remote when there are no torrents.
+
+destroy_daemon () {
+    transmission-remote --exit > /dev/null
+}
+
+torrent_ids=$(transmission-remote --list | sed -e '1d;$d;s/^ *//' | cut -f1 -d' ')
+if [[ ! "$torrent_ids" ]] ; then
+    notify-send -t 2000 "No torrents... Destroying Daemon"
+    destroy_daemon
+    exit 0
+fi
+
+id_count=0
+num_removed=0
+for id in $torrent_ids
+do
+    id_count=$((id_count + 1))
+	seeded_ratio=$(transmission-remote --torrent $id --info | grep "Ratio:" | cut -c 10)
+	if [[ "$seeded_ratio" -gt 0 ]] ; then
+        transmission-remote --torrent "$id" --remove > /dev/null
+        num_removed=$((num_removed + 1))
+    fi
+done
+
+if (( "$num_removed" == 1 )) ; then
+    message="Torrent removed"
+elif (( "$num_removed" > 1 )) ; then
+    message="Torrents removed"
+else
+    message="No torrents fully seeded"
+fi
+
+if (( "$num_removed" == "$id_count" )) ; then
+    message="$message | Destroying daemon"
+    destroy_daemon
+fi
+    
+notify-send -t 2000 "$message"

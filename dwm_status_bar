@@ -1,0 +1,71 @@
+#! /bin/bash
+
+delim="|"
+
+while true; do
+    if pidof cmus > /dev/null
+    then
+	sleep="1s"
+	all_info=$(cmus-remote -Q 2>/dev/null)
+	num=$(echo "${all_info}" | grep ' tracknumber ' | cut -d ' ' -f3-)
+	title=$(echo "${all_info}" | grep ' title ' | cut -d ' ' -f3-)
+	artist=$(echo "${all_info}" | grep ' artist ' | cut -d ' ' -f3-)
+	album=$(echo "${all_info}" | grep ' album ' | cut -d ' ' -f3-)
+	shuffle_status=$(echo "${all_info}" | grep ' shuffle ' | cut -d ' ' -f3)
+
+	# Get track position (seconds in) and duration and format for display with zero padding
+	position_info=$(echo "${all_info}" | grep 'position ' | cut -d ' ' -f2-)
+	duration_info=$(echo "${all_info}" | grep 'duration ' | cut -d ' ' -f2-)
+	position_mins=$(( position_info / 60 ))
+	position_secs=$(( position_info % 60 ))
+	position_formatted_mins=$(printf "%02d" $position_mins)
+	position_formatted_secs=$(printf "%02d" $position_secs)
+	duration_mins=$(( duration_info / 60 ))
+	duration_secs=$(( duration_info % 60 ))
+	duration_formatted_mins=$(printf "%02d" $duration_mins)
+	duration_formatted_secs=$(printf "%02d" $duration_secs)
+
+	track_time="$position_formatted_mins:$position_formatted_secs/$duration_formatted_mins:$duration_formatted_secs"
+	cmus=" $title - $artist ($track_time) $delim"
+    else
+        sleep="10s"
+	cmus=""
+    fi
+
+    if ip address | grep mullvad > /dev/null
+    then
+	vpn=" ⬆ $delim"
+    else
+	vpn=""
+    fi
+
+    if pidof transmission-daemon > /dev/null
+    then
+	torrent_list=$(transmission-remote --list | sed -e '1d;$d;s/^ *//' | cut -f1 -d' ')
+	torrents=''
+	for torrent_id in $torrent_list
+	do
+	    # Remove leading * of ID
+	    torrent_id=$(echo "$torrent_id" | sed 's:*::')
+            
+	    info=$(transmission-remote --torrent "$torrent_id" --info)
+	    percentage=$(echo "$info" | grep "Percent Done: *" | awk '{print $3}' | awk '{$1=$1}1')
+	    download=$(echo "$info" | grep "Download Speed: *" | awk '{for (i=3; i<NF; i++) printf $i " "; print $NF}')
+	    ratio=$(echo "$info" | grep "Ratio: *" | awk '{print $2}' | awk '{$1=$1}1')
+	    upload=$(echo "$info" | grep "Upload Speed: *" | awk '{for (i=3; i<NF; i++) printf $i " "; print $NF}')
+	    if [[ $percentage == "100%" ]]
+	    then
+	        torrents="$torrents $ratio ($upload)"
+	    else
+	        torrents="$torrents $percentage ($download)"
+	    fi
+	done;
+	torrents="$torrents $delim"
+    else
+	torrents=""
+    fi
+
+    date=" $(date +%a-%d-%b-%R | tr '-' ' ') "
+    xsetroot -name "$delim$cmus$torrents$vpn$date"
+    sleep $sleep
+done 
