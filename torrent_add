@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# Download torrent files or magnet links through transmission-remote starting the daemon if required
+
+if ! [[ "$(pidof transmission-daemon)" ]]; then
+    transmission-daemon >/dev/null && notify-send -t 2000 "Summoning transmission daemon"; sleep 1
+fi 
+
+if [ "$(transmission-remote -a "$@" | grep "success")" ] ; then
+    notify-send -t 2000 "Torrent added."
+else
+    notify-send -t 2000 "Torrent failed."
+fi
