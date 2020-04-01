@@ -33,6 +33,10 @@ file_creation_options () {
     fi
 }
 
+if [ -z "$(pidof cmus)" ] ; then
+    echo "cmus not currently running" && exit 0
+fi
+
 lyrics_directory=~/music/lyrics/
 currently_playing="$(cmus-remote -C status)"
 title=$(echo "$currently_playing" | grep -m 1 'tag title' | cut -d ' ' -f 3-)
