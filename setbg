@@ -1,0 +1,17 @@
+#!/bin/bash
+
+# No argument: Sets current_wallpaper file as background
+# File as argument: Copies it to current wallpaper file and sets it as background
+# Directory argument: Copies a random image from the directory to current wallpaper and sets it as background
+
+current_wallpaper=~/.config/current_wallpaper
+
+if [ -f "$1" ] ; then
+    cp "$1" $current_wallpaper
+fi
+
+if [ -d "$1" ] ; then
+    cp "$(find "$1"*{jpg,jpeg,png} -type f | shuf -n 1)" $current_wallpaper
+fi
+
+xwallpaper --zoom $current_wallpaper && notify-send -t 2000 "Wallpaper Updated."
