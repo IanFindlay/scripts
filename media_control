@@ -1,0 +1,63 @@
+#!/bin/bash
+
+# Media controls for cmus, if running, or mpv (through xdotool).
+
+mpv_binds() {
+    mpv_window="$(xdotool search --class mpv)"
+    if [ -z "$mpv_window" ] ; then
+        exit 0
+    fi
+
+    case "$prompt" in
+        toggle) 
+            xdotool key --window "$mpv_window" p
+            ;;
+        next)
+            xdotool key --window "$mpv_window" greater
+            ;;
+        prev)
+            xdotool key --window "$mpv_window" less
+            ;;
+        posseek)
+            xdotool key --window "$mpv_window" Right
+            ;;
+        negseek)
+            xdotool key --window "$mpv_window" Left
+            ;;
+        mod1)
+            xdotool key --window "$mpv_window" bracketright
+            ;;
+        mod2)
+            xdotool key --window "$mpv_window" bracketleft
+    esac
+}
+
+
+cmus_binds() {
+    case "$prompt" in
+        toggle)
+            cmus-remote --pause
+            ;;
+        next)
+            cmus-remote --next
+            ;;
+        prev)
+            cmus-remote --prev
+            ;;
+        posseek)
+            cmus-remote --seek +5
+            ;;
+        negseek)
+            cmus-remote --seek -5
+            ;;
+        mod1)
+            cmus-remote --shuffle
+            ;;
+        mod2)
+            cmus-remote --repeat
+    esac
+}
+
+prompt="$1"
+
+pgrep cmus &>/dev/null && cmus_binds || mpv_binds
