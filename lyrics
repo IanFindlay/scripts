@@ -1,8 +1,9 @@
 #!/bin/bash
 
 # Prints the lyric file corresponding to cmus's currently playing to the command line. If there isn't one gives option to:
-# Create lyrics - Which opens up filepath in $EDITOR
-# Mark file as instrumental - Which creates file with 'Instrumental' written to it
+# Write lyrics - Which opens up filepath in $EDITOR
+# Instrumental - Which creates file with 'Instrumental' written to it
+# Search - Which opens a Genius formatted url looking for the song
 # Edit argument opens lyric file for editing
 
 
@@ -21,17 +22,30 @@ display_lyrics () {
 
 file_creation_options () {
     echo No lyrics for "$title" - "$artist" found
-    read -t 10 -p "(C)reate Lyrics, (M)ark as Instrumental or (Q)uit: " response 
-    if [[ "$response" =~ ('c'|'C'|'Create') ]] ; then
-        $EDITOR "$filepath" && display_lyrics
+    read -t 10 -p "(i)nstrumental, (w)rite lyrics, (s)earch lyrics: " response 
+    case $response in
+        "w"|"write")
+            $EDITOR "$filepath" && display_lyrics
+            ;;
+        "i"|"instrumental")
+            echo "Instrumental" >> "$filepath" && display_lyrics
+            ;;
+        "s"|"search")
+            lyrics_search && $EDITOR "$filepath" && display_lyrics
+    esac
+}        
 
-    elif [[ "$response" =~ ('m'|'M'|'mark') ]] ; then
-        echo "Instrumental" >> "$filepath" && display_lyrics
-    
-    else
-        clear
-    fi
+lyrics_search () {
+    genius_search_url="$(echo "$artist"-"$title-lyrics" |
+        tr '[:upper:]' '[:lower:]' |
+        sed 's/ /-/g' |
+        sed "s/'//g" |
+        sed 's/\.//g' |
+        sed 's|/|-|g' |
+        sed 's/./\U&/')"
+    $BROWSER "https://genius.com/$genius_search_url"
 }
+
 
 if [ -z "$(pidof cmus)" ] ; then
     echo "cmus not currently running" && exit 0
