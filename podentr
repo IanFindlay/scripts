@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # Uses entr to invoke poddown when Newsboat queue is updated.
 

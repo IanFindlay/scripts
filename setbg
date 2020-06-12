@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # No argument: Sets current_wallpaper file as background
 # File as argument: Copies it to current wallpaper file and sets it as background

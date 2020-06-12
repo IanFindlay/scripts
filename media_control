@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # Media controls for cmus, if running, or mpv (through xdotool).
 
@@ -60,4 +60,8 @@ cmus_binds() {
 
 prompt="$1"
 
-pgrep cmus &>/dev/null && cmus_binds || mpv_binds
+if [ -z $(pgrep cmus) ] ; then
+    mpv_binds
+else
+    cmus_binds
+fi
