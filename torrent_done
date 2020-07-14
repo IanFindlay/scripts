@@ -1,0 +1,3 @@
+#!/bin/sh
+
+notify-send -t 2000 ""$TR_TORRENT_NAME" has finished downloading"
