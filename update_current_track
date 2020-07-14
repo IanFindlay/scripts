@@ -1,0 +1,5 @@
+#!/bin/sh
+
+# Writes cmus's current track information to file - used with lyrics (which uses entr) and show_lyrics scripts to show and automatically update lyrics
+
+echo "$4" > ~/.config/cmus/currently_playing.txt 2>&1

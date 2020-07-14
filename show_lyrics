@@ -1,0 +1,64 @@
+#!/bin/bash
+
+# Prints the lyric file corresponding to cmus's currently playing to the command line. Has the following possible arguments:
+# (e)dit- Opens up filepath in $EDITOR
+# (i)nstrumental - Creates file with 'Instrumental' written to it (appends in case used in error)
+# (s)earch - Opens a Genius.com formatted url to search for lyrics then opens up filepath in $EDITOR
+
+
+display_lyrics () {
+    clear
+    echo
+    echo "$title" - "$artist"
+    echo 
+    echo
+    cat "$filepath"
+    echo
+    echo
+    echo "{Pass the (e)dit argument to show_lyrics to edit these lyrics}"
+    echo
+}
+
+lyrics_search () {
+    genius_search_url="$(echo "$artist"-"$title-lyrics" |
+        tr '[:upper:]' '[:lower:]' |
+        sed 's/ /-/g' |
+        sed "s/'//g" |
+        sed 's/\.//g' |
+        sed 's|/|-|g' |
+        sed 's/\?//g' |
+        sed 's/./\U&/')"
+    $BROWSER "https://genius.com/$genius_search_url"
+}
+
+
+if [ -z "$(pidof cmus)" ] ; then
+    echo "cmus not currently running" && exit 0
+fi
+
+lyrics_directory=~/music/lyrics/
+
+currently_playing="$(cmus-remote -C status)"
+title=$(echo "$currently_playing" | grep -m 1 'tag title' | cut -d ' ' -f 3-)
+artist=$(echo "$currently_playing" | grep -m 1 'tag artist' | cut -d ' ' -f 3-)
+filepath=""$lyrics_directory""$artist"-"$title""
+
+if [[ $1 ]] ; then
+    case "$1" in
+        "e"|"edit")
+            $EDITOR "$filepath" && display_lyrics
+            ;;
+        "i"|"instrumental")
+            echo "Instrumental" >> "$filepath" && display_lyrics
+            ;;
+        "s"|"search")
+            lyrics_search && $EDITOR "$filepath" && display_lyrics
+    esac
+
+elif [[ -e "$filepath" ]] ; then
+    display_lyrics
+else
+    clear
+    echo "No lyrics for "$title" - "$artist" found"
+    echo "Pass (e)dit, (i)nstrumental or (s)earch to show_lyrics"
+fi
