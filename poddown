@@ -10,8 +10,8 @@ while read -r LINE; do
     url="$(echo "$LINE" | awk '{print $1}')"
     name="$(basename "$url")"
     id_num="$(tsp wget -P $save_directory "$url")"
-    notify-send -t 2000 ""$name" enqueued."
-    tsp -D "$id_num" notify-send -t 2000 ""$name" downloaded"
+    notify-send ""$name" enqueued."
+    tsp -D "$id_num" notify-send ""$name" downloaded"
 done < "$queue_file"
 
 echo > "$queue_file"
