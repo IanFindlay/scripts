@@ -1,0 +1,9 @@
+#!/bin/sh
+
+# Downloads videos through youtube-dl with notifications
+
+url="$1"
+name=$(youtube-dl --get-filename "$url" | grep -o '[^/]*$')
+id_num=$(tsp youtube-dl "$url")
+notify-send "$name enqueued"
+tsp -D "$id_num" notify-send "$name downloaded"
