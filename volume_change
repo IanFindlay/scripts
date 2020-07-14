@@ -1,0 +1,52 @@
+#!/bin/bash
+
+# Detects whether Headphones are plugged in and changes the volume accordingly.
+
+
+if [[ $(grep -c "Pin-ctls: 0x00" "/proc/asound/card0/codec#0") == 1 ]] ; then
+
+    case "$1" in
+        up5)
+            amixer set Master 5%+
+            ;;
+        down5)
+            amixer set Master 5%-
+            ;;
+        up1)
+            amixer set Master 1%+
+            ;;
+        down1)
+            amixer set Master 1%-
+            ;;
+        toggle)
+            amixer set Master toggle
+            ;;
+        max)
+            amixer set Master 100%
+    esac
+
+else
+    
+    case "$1" in
+        up5)
+            amixer set Headphone 5%+
+            ;;
+        down5)
+            amixer set Headphone 5%-
+            ;;
+        up1)
+            amixer set Headphone 1%+
+            ;;
+        down1)
+            amixer set Headphone 1%-
+            ;;
+        toggle)
+            amixer set Headphone toggle
+            ;;
+        max)
+            amixer set Headphone 100%
+    esac
+
+fi
+
+pkill dwm_status_bar && dwm_status_bar & disown &> /dev/null
