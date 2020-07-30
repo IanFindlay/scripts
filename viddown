@@ -5,5 +5,5 @@
 url="$1"
 name=$(youtube-dl --get-filename "$url" | grep -o '[^/]*$')
 id_num=$(tsp youtube-dl "$url")
-notify-send "$name enqueued"
-tsp -D "$id_num" notify-send "$name downloaded"
+notify-send -t 2000 "$name enqueued"
+tsp -D "$id_num" notify-send -t 2000 "$name downloaded"
