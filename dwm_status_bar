@@ -3,7 +3,6 @@
 delim="|"
 
 while true; do
-    
     sleep=20
 
     #-----------
@@ -31,7 +30,7 @@ while true; do
         duration_formatted_mins=$(printf "%02d" $duration_mins)
         duration_formatted_secs=$(printf "%02d" $duration_secs)
 
-        if [[ "$shuffle_status" == "true" ]] ; then
+        if [ "$shuffle_status" == "true" ] ; then
             shuffle_status=" 🔀"
         else
             unset shuffle_status
@@ -58,43 +57,33 @@ while true; do
     #-----------
 
     if pidof transmission-daemon >/dev/null ; then
-#        torrent_list=$(transmission-remote --list | sed -e '1d;$d;s/^ *//' | cut -f1 -d' ')
-#        torrents=''
-#        for torrent_id in $torrent_list
-#        do
-#            # Remove leading * of ID
-#            torrent_id=$(echo "$torrent_id" | sed 's:*::')
-#                
-#            info=$(transmission-remote --torrent "$torrent_id" --info)
-#            percentage=$(echo "$info" | grep "Percent Done: *" | awk '{print $3}' | awk '{$1=$1}1')
-#            download=$(echo "$info" | grep "Download Speed: *" | awk '{print $3 " " $NF}')
-#            ratio=$(echo "$info" | grep "Ratio: *" | awk '{print $2}' | awk '{$1=$1}1')
-#            upload=$(echo "$info" | grep "Upload Speed: *" | awk '{print $3 " " $NF}')
-#
-#            if [[ $percentage == "100%" ]]
-#            then
-#                torrents="$torrents $ratio ($upload)"
-#            else
-#                torrents="$torrents $percentage ($download)"
-#            fi
-#        done;
-#        torrents="$torrents $delim"
-    
-        torrents_info="$(transmission-remote -tall -i)"
-        downloading="$(echo "$torrents_info" | grep "Percent Done:" | grep -c -v 100%)"
-        seeding="$(echo "$torrents_info" | grep -c "Percent Done: 100%")"
-        down_speed="$(echo "$torrents_info" | grep "Download Speed:" | awk '{ print $3 }' | paste -sd+ | bc)"
-        up_speed="$(echo "$torrents_info" | grep "Upload Speed:" | awk '{ print $3 }' | paste -sd+ | bc)"
-        ratios="$(echo "$torrents_info" | grep "Ratio:" | awk '{ print $2 }')"
-        
-        seeded_to_one=0
-        for ratio in $ratios ; do
-            first_digit="$(echo $ratio | cut -c 1)"
-            if [[ "$first_digit" -gt 0 ]] ; then
-                seeded_to_one=$(($seeded_to_one + 1))
-            fi
-        done
+        torrents_info=$(transmission-remote --list)
+        id_list=$(echo "$torrents_info" | sed -e '1d;$d;s/^ *//' | cut -f1 -d' ')
+        downloading=0
+        seeding=0
+        seeded=0
+        for torrent_id in $id_list ; do
+            torrent_id=$(echo "$torrent_id" | sed 's:*::')
+            info=$(transmission-remote --torrent "$torrent_id" --info)
+            percentage=$(echo "$info" | grep "Percent Done: *" | awk '{print $3}' | awk '{$1=$1}1')
+            ratio=$(echo "$info" | grep "Ratio: *" | awk '{print $2}' | awk '{$1=$1}1')
 
+            if [ "$percentage" = "100%" ] ; then
+                first_digit="$(echo "$ratio" | cut -c 1)"
+                if [ "$first_digit" -gt 0 ] ; then
+                    seeded=$(($seeded + 1))
+                else
+                    seeding=$(($seeding + 1)) 
+                fi
+            else
+                downloading=$(($downloading + 1))
+            fi
+        done;
+
+        overall_info=$(echo "$torrents_info" | grep Sum:)
+        down_speed="$(echo "$overall_info" | awk '{ print $5 }' | awk -F"." '{ print $1 }')"
+        up_speed="$(echo "$overall_info" | awk '{ print $4 }' | awk -F"." '{ print $1 }')"
+        
         if [ "$downloading" = 0 ] ; then
             unset downloading
         else
@@ -107,14 +96,13 @@ while true; do
             seeding=" 🔼"$seeding" ("$up_speed")"
         fi
 
-        if [ "$seeded_to_one" = 0 ] ; then
-            unset seeded_to_one
+        if [ "$seeded" = 0 ] ; then
+            unset seeded
         else
-            seeded_to_one=" ✔️ "$seeded_to_one""
-            
+            seeded=" ✔️ "$seeded""
         fi
         
-        torrents=""$downloading""$seeding""$seeded_to_one" $delim"
+        torrents=""$downloading""$seeding""$seeded" $delim"
     else
         unset torrents
     fi
@@ -124,13 +112,26 @@ while true; do
     # VOLUME
     #-----------
 
-    percentage="$(amixer sget Master | awk -F"[][]" '/dB/ { print $2 }')"
-    if [[ $(amixer sget Master | awk -F"[][]" '/dB/ { print $6 }') == 'off' ]] ; then
-        volume=" 🔇 $delim"
-    elif [[ "$percentage" != "100%" ]] ; then
-        volume=" 🔊 $percentage $delim"
+    if [[ $(grep -c "Pin-ctls: 0x00" "/proc/asound/card0/codec#0") == 1 ]] ; then
+        
+        percentage="$(amixer sget Master | awk -F"[][]" '/dB/ { print $2 }')"
+        if [[ $(amixer sget Master | awk -F"[][]" '/dB/ { print $6 }') == 'off' ]] ; then
+            volume=" 🔇 $delim"
+        elif [ "$percentage" != "100%" ] ; then
+            volume=" 🔊 $percentage $delim"
+        else
+            unset volume
+        fi
+    
     else
-        unset volume
+        percentage="$(amixer sget Headphone | awk -F"[][]" '/dB/ { print $2;exit; }')"
+        if [[ $(amixer sget Headphone | awk -F"[][]" '/dB/ { print $6;exit; }') == 'off' ]] ; then
+            volume=" 🎧 🔇 $delim"
+        elif [ "$percentage" != "100%" ] ; then
+            volume=" 🎧 $percentage $delim"
+        else
+            unset volume
+        fi
     fi
 
     #-----------
