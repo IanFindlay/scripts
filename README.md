@@ -1,6 +1,6 @@
 # Scripts
 
-## A collection of shell scripts I use most of which I have written.
+## A collection of shell scripts I use. Some are original, some are my version of other's scripts and others are exact copies. The non-original scripts have attribution (if I remember it)
 
 ### dwm\_restart
 Taken from the [Arch Wiki](https://wiki.archlinux.org/index.php/Dwm#Restart\_dwm). Allows dwm to be restarted without logging out or closing application. Useful when testing a new script or alteration to dwm but something I don't really use.
@@ -19,28 +19,28 @@ Volume - If speaker volume is less than 100% the volume is displayed with a diff
 Date - Displays the current date and time in the following format "Day Date Month HH:MM"
 
 ### update\_current\_track, lyrics and show\_lyrics
-My three-part solution to being able to have the lyrics of the current song displayed and auto-updating. Uses cmus's status\_display\_program command to write the current track to a file (update\_current\_track) that is then monitored by [entr](https://github.com/clibs/entr) (lyrics) and then show\_lyrics displays the lyrics by reading a local file. Lyrics can be Edited, marked as Instrumental or Searched for at Genius using arguments to show\_lyrics.
+My three-part solution to being able to have the lyrics of the current song displayed and auto-updating. Uses cmus' status\_display\_program command to write the current track to a file (update\_current\_track) that is then monitored by [entr](https://github.com/clibs/entr) (lyrics) and then show\_lyrics displays the lyrics by reading a local file. Lyrics can be Edited, marked as Instrumental or Searched for at Genius using arguments to show\_lyrics.
 
 ### media\_control
 Allows me to map my media controls to both cmus (which takes priority) and mpv (which uses xdotool).
 
 ### podentr, poddown
-Based on [Luke Smith's scripts](https://github.com/LukeSmithxyz) - Improves upon Newsboats podcast downloading by monitoring the queue file (podentr) and downloading podcasts automatically without having to open podboat (poddown).
+Based on [this Luke Smith video](https://videos.lukesmith.xyz/videos/watch/e67a4d63-b473-4e23-8c07-138351fcc69d) - Improves upon Newsboats podcast downloading by monitoring the queue file (podentr) and downloading podcasts automatically (poddown) without having to open podboat.
 
 ### remseeded
 Uses transmission-remote to remove any torrents that have seeded to or beyond a 1.0 ratio. If there are no torrents, or all torrents were seeded to 1.0 and have therefore been removed, it kills the transmission-daemon.
 
 ### setbg
-Another Luke Smith inspired scripts, simply uses xwallpaper to set the desktop background either to an already set file, the file supplied as an argument or a random file in a directory passed as an argument.
+Another [Luke Smith video](https://videos.lukesmith.xyz/videos/watch/a99d48a3-0960-4e45-879c-637df1c1270e) inspired script, simply uses xwallpaper to set the desktop background either to an already set file, the file supplied as an argument or a random file in a directory passed as an argument.
 
 ### torrent\_add
-Adds a magnet link via transmission-remote starting transmission-daemon if required.
+Adds a magnet link via transmission-remote. Starts transmission-daemon if required.
 
 ### torrent\_done
 Sends a notification that a torrent has finished downloading through notify-send.
 
 ### viddown
-Uses youtube-dl to download videos from a url with a notification for both when the file is enqueued and completed.
+Basically poddown but for video. Uses youtube-dl to download videos from a url with a notification for both when the file is enqueued and completed.
 
 ### volume\_change
 Detects if my headphones or speakers are currently in use and alters the volume of the appropriate device. Also kills and restarts dwm\_status\_bar so the volume displayed is up-to-date.
