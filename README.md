@@ -7,10 +7,15 @@ Taken from the [Arch Wiki](https://wiki.archlinux.org/index.php/Dwm#Restart\_dwm
 
 ### dwm\_status\_bar
 My bespoke dwm status bar with the following parts:
+
 cmus - Displays Song, Artist, Album, Track Time and has an icon if Shuffle is on. Status updates ~every second when cmus is running, 20 seconds otherwise.
+
 Mullvad VPN - Display a padlock icon when I am connected through Mullvad VPN.
+
 Transmission-cli - Categorises torrents into Downloading, Uploading and Seeded (Ratio >= 1.0) and displays the number of torrents of each type and the accumulated speed of the Downloading and Uploading ones.
+
 Volume - If speaker volume is less than 100% the volume is displayed with a different icon for when it is muted and when my headphones are plugged in.
+
 Date - Displays the current date and time in the following format "Day Date Month HH:MM"
 
 ### update\_current\_track, lyrics and show\_lyrics
