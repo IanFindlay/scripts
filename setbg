@@ -4,7 +4,7 @@
 # File as argument: Copies it to current wallpaper file and sets it as background
 # Directory argument: Copies a random image from the directory to current wallpaper and sets it as background
 
-current_wallpaper=~/.config/current_wallpaper
+current_wallpaper=~/pictures/backgrounds/current_wallpaper
 
 if [ -f "$1" ] ; then
     cp "$1" $current_wallpaper
