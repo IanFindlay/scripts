@@ -21,6 +21,9 @@ Date - Displays the current date and time in the following format "Day Date Mont
 ### update\_current\_track, lyrics and show\_lyrics
 My three-part solution to being able to have the lyrics of the current song displayed and auto-updating. Uses cmus' status\_display\_program command to write the current track to a file (update\_current\_track) that is then monitored by [entr](https://github.com/clibs/entr) (lyrics) and then show\_lyrics displays the lyrics by reading a local file. Lyrics can be Edited, marked as Instrumental or Searched for at Genius using arguments to show\_lyrics.
 
+### mail
+Simply runs mbsync (with custom configuration file location to keep my home directory clean), then notmuch with the 'new' argument and finally, if there is new mail, neomutt.
+
 ### media\_control
 Allows me to map my media controls to both cmus (which takes priority) and mpv (which uses xdotool).
 

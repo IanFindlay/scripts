@@ -1,0 +1,9 @@
+#!/bin/sh
+
+# Simple script that runs mbsync, then notmuch and, if there are new messages, opens neomutt.
+
+mbsync -c "/home/finners/.config/mbsync/mbsyncrc" -a
+NOTMUCH_OUTPUT=$(notmuch new 2>/dev/null)
+if echo $NOTMUCH_OUTPUT | grep -v "No new mail"; then
+    neomutt
+fi
