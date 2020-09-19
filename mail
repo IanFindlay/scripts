@@ -4,6 +4,6 @@
 
 mbsync -c "/home/finners/.config/mbsync/mbsyncrc" -a
 NOTMUCH_OUTPUT=$(notmuch new 2>/dev/null)
-if echo $NOTMUCH_OUTPUT | grep -v "No new mail"; then
+if echo $NOTMUCH_OUTPUT | grep "new message"; then
     neomutt
 fi
