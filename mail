@@ -8,7 +8,6 @@ count_emails() {
 }
 
 num_files=$(count_emails)
-echo $num_files
 mbsync -c "/home/finners/.config/mbsync/mbsyncrc" -a
 if [ $(count_emails) != "$num_files" ]; then
     notmuch new 2&>/dev/null;
