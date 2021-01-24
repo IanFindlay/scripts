@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+# Searches the contents of all of the files in my lyrics directory for the
+# argument word or phrase and prints the name of any matches (Artist - Title)
+
+search_string="$@"
+result=$(grep -i -l "$search_string" ~/music/lyrics/*)
+basename "$result" | sed 's/-/ - /'
