@@ -36,6 +36,9 @@ Uses transmission-remote to remove any torrents that have seeded to or beyond a 
 ### setbg
 Another [Luke Smith video](https://videos.lukesmith.xyz/videos/watch/a99d48a3-0960-4e45-879c-637df1c1270e) inspired script, simply uses xwallpaper to set the desktop background either to an already set file, the file supplied as an argument or a random file in a directory passed as an argument.
 
+### song_search
+Uses grep to search the directory with my lyrics files in - as mentioned in the update_current_tract etc description above - for the word/words that I pass as the argument(s) and prints the matches in "Artist - Title" format.
+
 ### torrent\_add
 Adds a magnet link via transmission-remote. Starts transmission-daemon if required.
 
