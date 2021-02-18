@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Count emails, run mbsync and then compare email count to previous to determine if
-# there's any new mail. If there is, run notmuch and then neomutt
+# there's any new mail - if there is run neomutt then notmuch.
 
 count_emails() {
     echo $(find ~/documents/.mail | wc -l)
@@ -10,6 +10,6 @@ count_emails() {
 num_files=$(count_emails)
 mbsync -c "/home/finners/.config/mbsync/mbsyncrc" -a
 if [ $(count_emails) != "$num_files" ]; then
-    notmuch new 2&>/dev/null;
     neomutt;
+    notmuch new 2&>/dev/null;
 fi
