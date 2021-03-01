@@ -27,6 +27,9 @@ My three-part solution to being able to have the lyrics of the current song disp
 ### media\_control
 Allows me to map my media controls to both cmus (which takes priority) and mpv (which uses xdotool).
 
+### otpmenu
+Essentially [passmenu](https://git.zx2c4.com/password-store/tree/contrib/dmenu/passmenu) for [pass-otp](https://github.com/tadfisher/pass-otp) - allows me to use dmenu to copy otp codes stored in pass to the clipboard. Heavily based upon [Alwyn Kik's modifications to passmenu](https://gist.github.com/Alveel/d26c3b524d785af6fb0037394dd1f25e) as I simply adapted it to the specifics of my setup.
+
 ### podentr, poddown
 Based on [this Luke Smith video](https://videos.lukesmith.xyz/videos/watch/e67a4d63-b473-4e23-8c07-138351fcc69d) - Improves upon Newsboats podcast downloading by monitoring the queue file (podentr) and downloading podcasts automatically (poddown) without having to open podboat.
 
