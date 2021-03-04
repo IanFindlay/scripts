@@ -1,7 +1,7 @@
 #!/bin/sh
 
 if pidof cmus >/dev/null ; then
-    all_info=$(cmus-remote -Q 2>/dev/null)
+    all_info=$(cmus-remote -Q)
     title=$(echo "${all_info}" | grep 'tag title' | cut -d ' ' -f3-)
     artist=$(echo "${all_info}" | grep 'tag artist' | cut -d ' ' -f3-)
     album=$(echo "${all_info}" | grep 'tag album ' | cut -d ' ' -f3-)
