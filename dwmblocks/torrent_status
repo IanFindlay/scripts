@@ -1,0 +1,50 @@
+#!/bin/sh
+
+if pidof transmission-daemon >/dev/null ; then
+    torrents_info=$(transmission-remote --list)
+    id_list=$(echo "$torrents_info" | sed -e '1d;$d;s/^ *//' | cut -f1 -d' ')
+    downloading=0
+    seeding=0
+    seeded=0
+    for torrent_id in $id_list ; do
+        torrent_id=$(echo "$torrent_id" | sed 's:*::')
+        info=$(transmission-remote --torrent "$torrent_id" --info)
+        percentage=$(echo "$info" | grep "Percent Done: *" | awk '{print $3}' | awk '{$1=$1}1')
+        ratio=$(echo "$info" | grep "Ratio: *" | awk '{print $2}' | awk '{$1=$1}1')
+
+        if [ "$percentage" = "100%" ] ; then
+            first_digit="$(echo "$ratio" | cut -c 1)"
+            if [ "$first_digit" -gt 0 ] ; then
+                seeded=$(($seeded + 1))
+            else
+                seeding=$(($seeding + 1)) 
+            fi
+        else
+            downloading=$(($downloading + 1))
+        fi
+    done;
+
+    overall_info=$(echo "$torrents_info" | grep Sum:)
+    down_speed="$(echo "$overall_info" | awk '{ print $5 }' | awk -F"." '{ print $1 }')"
+    up_speed="$(echo "$overall_info" | awk '{ print $4 }' | awk -F"." '{ print $1 }')"
+    
+    if [ "$downloading" = 0 ] ; then
+        unset downloading
+    else
+        downloading=" 🔽"$downloading" ("$down_speed")"
+    fi
+
+    if [ "$seeding" = 0 ] ; then
+        unset seeding
+    else
+        seeding=" 🔼"$seeding" ("$up_speed")"
+    fi
+
+    if [ "$seeded" = 0 ] ; then
+        unset seeded
+    else
+        seeded=" ✔️ "$seeded""
+    fi
+    
+    echo ""$downloading""$seeding""$seeded""
+fi
