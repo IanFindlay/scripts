@@ -2,14 +2,14 @@
 
 if pidof cmus >/dev/null ; then
     all_info=$(cmus-remote -Q 2>/dev/null)
-    title=$(echo "${all_info}" | grep ' title ' | cut -d ' ' -f3-)
-    artist=$(echo "${all_info}" | grep ' artist ' | cut -d ' ' -f3-)
-    album=$(echo "${all_info}" | grep ' album ' | cut -d ' ' -f3-)
-    shuffle_status=$(echo "${all_info}" | grep ' shuffle ' | cut -d ' ' -f3)
+    title=$(echo "${all_info}" | grep 'tag title' | cut -d ' ' -f3-)
+    artist=$(echo "${all_info}" | grep 'tag artist' | cut -d ' ' -f3-)
+    album=$(echo "${all_info}" | grep 'tag album ' | cut -d ' ' -f3-)
+    shuffle_status=$(echo "${all_info}" | grep 'set shuffle' | cut -d ' ' -f3)
 
     # Get track position (seconds in) and duration and format for display with zero padding
-    position_info=$(echo "${all_info}" | grep 'position ' | cut -d ' ' -f2-)
-    duration_info=$(echo "${all_info}" | grep 'duration ' | cut -d ' ' -f2-)
+    position_info=$(echo "${all_info}" | grep '^position' | cut -d ' ' -f2-)
+    duration_info=$(echo "${all_info}" | grep '^duration' | cut -d ' ' -f2-)
     position_mins=$(( position_info / 60 ))
     position_secs=$(( position_info % 60 ))
     position_formatted_mins=$(printf "%02d" $position_mins)
