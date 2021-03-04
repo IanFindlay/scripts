@@ -2,7 +2,6 @@
 
 if pidof cmus >/dev/null ; then
     all_info=$(cmus-remote -Q 2>/dev/null)
-    num=$(echo "${all_info}" | grep ' tracknumber ' | cut -d ' ' -f3-)
     title=$(echo "${all_info}" | grep ' title ' | cut -d ' ' -f3-)
     artist=$(echo "${all_info}" | grep ' artist ' | cut -d ' ' -f3-)
     album=$(echo "${all_info}" | grep ' album ' | cut -d ' ' -f3-)
