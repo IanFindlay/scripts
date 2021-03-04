@@ -1,0 +1,21 @@
+#!/bin/sh
+
+if [[ $(grep -c "Pin-ctls: 0x00" "/proc/asound/card0/codec#0") == 1 ]] ; then
+    
+    percentage="$(amixer sget Master | awk -F"[][]" '/dB/ { print $2 }')"
+    if [[ $(amixer sget Master | awk -F"[][]" '/dB/ { print $6 }') == 'off' ]] ; then
+        echo "🔇"
+    elif [ "$percentage" != "100%" ] ; then
+        echo "🔊 $percentage"
+    fi
+
+else
+    percentage="$(amixer sget Headphone | awk -F"[][]" '/dB/ { print $2;exit; }')"
+    if [[ $(amixer sget Headphone | awk -F"[][]" '/dB/ { print $6;exit; }') == 'off' ]] ; then
+        echo "🎧 🔇"
+    elif [ "$percentage" != "100%" ] ; then
+        echo "🎧 $percentage"
+    else
+        echo "🎧"
+    fi
+fi
