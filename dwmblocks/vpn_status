@@ -1,0 +1,5 @@
+#!/bin/sh
+
+if ip address | grep mullvad >/dev/null ; then
+  echo "🔒"
+fi
