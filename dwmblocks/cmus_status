@@ -9,15 +9,12 @@ if pidof cmus >/dev/null ; then
 
     # Get track position (seconds in) and duration and format for display with zero padding
     position_info=$(echo "${all_info}" | grep '^position' | cut -d ' ' -f2-)
+    position_mins=$(printf "%02d" $(( position_info / 60 )))
+    position_secs=$(printf "%02d" $(( position_info % 60 )))
+    
     duration_info=$(echo "${all_info}" | grep '^duration' | cut -d ' ' -f2-)
-    position_mins=$(( position_info / 60 ))
-    position_secs=$(( position_info % 60 ))
-    position_formatted_mins=$(printf "%02d" $position_mins)
-    position_formatted_secs=$(printf "%02d" $position_secs)
-    duration_mins=$(( duration_info / 60 ))
-    duration_secs=$(( duration_info % 60 ))
-    duration_formatted_mins=$(printf "%02d" $duration_mins)
-    duration_formatted_secs=$(printf "%02d" $duration_secs)
+    duration_mins=$(printf "%02d" $(( duration_info / 60 )))
+    duration_secs=$(printf "%02d" $(( duration_info % 60 )))
 
     if [ "$shuffle_status" == "true" ] ; then
         shuffle_status=" 🔀"
@@ -25,7 +22,7 @@ if pidof cmus >/dev/null ; then
         unset shuffle_status
     fi
 
-    track_time="$position_formatted_mins:$position_formatted_secs/$duration_formatted_mins:$duration_formatted_secs"
+    track_time="$position_mins:$position_secs/$duration_mins:$duration_secs"
 
     echo "$title - $artist [$album] ($track_time)$shuffle_status"
 fi
