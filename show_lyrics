@@ -12,7 +12,7 @@ display_lyrics () {
     echo "$title" - "$artist"
     echo 
     echo
-    cat "$filepath"
+    cat "$filepath" | less -F
     echo
     echo
     echo "{Pass the (e)dit argument to show_lyrics to edit these lyrics}"
