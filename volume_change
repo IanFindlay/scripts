@@ -49,4 +49,4 @@ else
 
 fi
 
-pkill dwm_status_bar && dwm_status_bar & disown &> /dev/null
+kill -36 $(pidof dwmblocks)
