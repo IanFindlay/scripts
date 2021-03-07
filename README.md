@@ -21,6 +21,11 @@ Volume - If speaker volume is less than 100% the volume is displayed with a diff
 
 Date - Displays the current date and time in the following format "Day Date Month HH:MM"
 
+#### This script has been split into separate scripts for use with:
+
+### dwmblocks folder and blocks
+Instead of using sleep - of different lengths depending on if cmus (music player) was running or not - I've started using [dwmblocks](https://github.com/torrinfail/dwmblocks). This allows me to update information on the status bar independently - for example, the volume portion of the bar only updates when it has been changed. The blocks (scripts responsible for each part of the status bar) are currently only slightly modified versions of those mentioned above in the dwm_status_bar section so I won't reiterate what they do here.
+
 ### update\_current\_track, lyrics and show\_lyrics
 My three-part solution to being able to have the lyrics of the current song displayed and auto-updating. Uses cmus' status\_display\_program command to write the current track to a file (update\_current\_track) that is then monitored by [entr](https://github.com/clibs/entr) (lyrics) and then show\_lyrics displays the lyrics by reading a local file. Lyrics can be Edited, marked as Instrumental or Searched for at Genius using arguments to show\_lyrics.
 
