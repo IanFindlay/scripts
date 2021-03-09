@@ -10,6 +10,7 @@ count_emails() {
 num_files=$(count_emails)
 mbsync -c "/home/finners/.config/mbsync/mbsyncrc" -a
 if [ $(count_emails) != "$num_files" ]; then
-    neomutt;
-    notmuch new 2&>/dev/null;
+    neomutt
+    echo "Running notmuch to index new message(s)."
+    notmuch new 2&> /dev/null
 fi
