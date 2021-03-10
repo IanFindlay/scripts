@@ -13,6 +13,8 @@ else
     play_song=false
 fi
 
+echo -e '\nSongs matching those lyrics:'
+
 counter=0
 readarray matches < <(grep -ilo "$search_string" ~/music/lyrics/*)
     for match in "${matches[@]}"
@@ -30,8 +32,6 @@ fi
 if [ $play_song = false ]; then
     exit 0
 fi
-
-echo -e '\nSongs matching those lyrics:\n'
 
 if [ $counter = 1 ]; then
     selected_song=${matches[0]}
