@@ -2,20 +2,44 @@
 
 # Searches the contents of all of the files in my lyrics directory for the
 # argument word or phrase and prints the name of any matches (Artist - Title)
-# If given the -p argument it will play the matched song in mpv
+# If given the -p argument it will play the matched song in mpv or, in the case
+# of multiple matches, prompt for which song to play.
 
 if [ "$1" = "-p" ] ; then
     search_string="${@: 2}"
+    play_song=true
 else
     search_string="$@"
+    play_song=false
 fi
 
-result="$(grep -i -l "$search_string" ~/music/lyrics/*)"
-artist_title="$(basename "$result" | sed 's/-/ - /')"
+counter=0
+readarray matches < <(grep -ilo "$search_string" ~/music/lyrics/*)
+    for match in "${matches[@]}"
+    do
+        echo -e "\n$counter)" $(basename "${match}" | sed 's/-/ - /')
+        (( counter=$counter + 1 ))
+    done
+    echo
 
-if [ "$1" = "-p" ] ; then
-    song_title="$(echo "$artist_title" | awk -F- '{print $2}')"
-    mpv "$(find ~/music/collection/ -iname "*$song_title*")"
+if [ $counter = 0 ]; then
+    echo -e 'No matching lyrics found\n'
+    exit 0
+fi
+
+if [ $play_song = false ]; then
+    exit 0
+fi
+
+echo -e '\nSongs matching those lyrics:\n'
+
+if [ $counter = 1 ]; then
+    selected_song=${matches[0]}
 else
-    echo $artist_title
+    echo -e 'Select which song you want to play:'
+    read chosen_index
+    selected_song=${matches["$chosen_index"]}
 fi
+
+song_title="$(echo "$selected_song" | awk -F- '{print $2}')"
+mpv "$(find ~/music/collection/ -iname "*$song_title*")"
