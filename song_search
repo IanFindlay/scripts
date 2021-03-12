@@ -43,16 +43,18 @@ else
     selected_song=${matches["$chosen_index"]}
 fi
 
+song_artist="$(basename "$selected_song" | awk -F- '{print $1}')"
 song_title="$(basename "$selected_song" | awk -F- '{print $2}')"
+underscore_artist="$(echo "$song_artist" | sed 's/ /_/g')"
 underscore_title="$(echo "$song_title" | sed 's/ /_/g')"
 
 echo -e '\nFiles matching that song title:'
 
 counter=0
-readarray files < <(find ~/music/collection/ -iname "*$song_title*.mp3" \
-                                             -o -iname "*$song_title*.flac" \
-                                             -o -iname "*$underscore_title*.mp3" \
-                                             -o -iname "*$underscore_title*.flac")
+readarray files < <(find ~/music/collection/ -ipath "*$song_artist*$song_title*.mp3" \
+                                             -o -ipath "*$song_artist*$song_title*.flac" \
+                                             -o -ipath "*$underscore_artist*$underscore_title*.mp3" \
+                                             -o -ipath "*$underscore_artist*$underscore_title*.flac")
     for file in "${files[@]}"
     do
         echo -e "\n$counter)" $(basename "${file}")
