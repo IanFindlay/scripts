@@ -2,10 +2,9 @@
 
 # Searches the contents of all of the files in my lyrics directory for the
 # argument word or phrase and prints the name of any matches (Artist - Title)
-# If given the -p argument it will play the matched song in mpv or, in the case
-# of multiple matches, prompt for which song to play. Similarly, if only one
-# possible audio file is found it will be played whereas multiple options will
-# be displayed and prompted for if required.
+# The -p(lay) argument allows you to choose which song to play, if there are
+# multiple matches, and runs the play_song script to try to find and play the
+# appropriate local file.
 
 if [ "$1" = "-p" ] ; then
     search_string="${@: 2}"
@@ -14,8 +13,6 @@ else
     search_string="$@"
     play_song=false
 fi
-
-echo -e '\nSongs matching those lyrics:'
 
 counter=0
 readarray matches < <(grep -ilo "$search_string" ~/music/lyrics/*)
@@ -43,36 +40,4 @@ else
     selected_song=${matches["$chosen_index"]}
 fi
 
-song_artist="$(basename "$selected_song" | awk -F- '{print $1}')"
-song_title="$(basename "$selected_song" | awk -F- '{print $2}')"
-underscore_artist="$(echo "$song_artist" | sed 's/ /_/g')"
-underscore_title="$(echo "$song_title" | sed 's/ /_/g')"
-
-echo -e '\nFiles matching that song title:'
-
-counter=0
-readarray files < <(find ~/music/collection/ -ipath "*$song_artist*$song_title*.mp3" \
-                                             -o -ipath "*$song_artist*$song_title*.flac" \
-                                             -o -ipath "*$underscore_artist*$underscore_title*.mp3" \
-                                             -o -ipath "*$underscore_artist*$underscore_title*.flac")
-    for file in "${files[@]}"
-    do
-        echo -e "\n$counter)" $(basename "${file}")
-        (( counter=$counter + 1 ))
-    done
-    echo
-
-if [ $counter = 0 ]; then
-    echo -e 'No matching files found\n'
-    exit 0
-fi
-
-if [ $counter = 1 ]; then
-    selected_file=${files[0]}
-else
-    echo -e 'Select which file you want to play:'
-    read chosen_index
-    selected_file=${files["$chosen_index"]}
-fi
-
-echo "$selected_file" | mpv --no-audio-display --playlist=-
+play_song "$(basename "$selected_song")"

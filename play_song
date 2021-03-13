@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+
+# Takes song in form artist-title from either arguments or stdin then attempts to locate
+# a matching file and play it.
+
+artist_title="$@"
+if [[ "$artist_title" = '' ]]; then
+    while read artist_title; do
+        echo "$artist_title"
+    done
+fi
+
+song_artist="$(basename "$artist_title" | awk -F- '{print $1}')"
+song_title="$(basename "$artist_title" | awk -F- '{print $2}')"
+underscore_artist="$(echo "$song_artist" | sed 's/ /_/g')"
+underscore_title="$(echo "$song_title" | sed 's/ /_/g')"
+
+echo -e '\nFiles matching that song title:'
+
+counter=0
+readarray files < <(find ~/music/collection/ -ipath "*$song_artist*$song_title*.mp3" \
+                                             -o -ipath "*$song_artist*$song_title*.flac" \
+                                             -o -ipath "*$underscore_artist*$underscore_title*.mp3" \
+                                             -o -ipath "*$underscore_artist*$underscore_title*.flac")
+    for file in "${files[@]}"
+    do
+        echo -e "\n$counter)" $(basename "${file}")
+        (( counter=$counter + 1 ))
+    done
+    echo
+
+if [ $counter = 0 ]; then
+    echo -e 'No matching files found\n'
+    exit 0
+fi
+
+if [ $counter = 1 ]; then
+    selected_file=${files[0]}
+else
+    echo -e 'Select which file you want to play:'
+    read chosen_index
+    selected_file=${files["$chosen_index"]}
+fi
+
+echo "$selected_file" | mpv --no-audio-display --playlist=-
