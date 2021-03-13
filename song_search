@@ -7,12 +7,12 @@
 # appropriate local file.
 
 if [ "$1" = "-p" ] ; then
-    search_string="${@: 2}"
+    shift
     play_song=true
 else
-    search_string="$@"
     play_song=false
 fi
+search_string="$@"
 
 counter=0
 readarray matches < <(grep -ilo "$search_string" ~/music/lyrics/*)
