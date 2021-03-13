@@ -1,25 +1,18 @@
 #!/usr/bin/env bash
 
-# Takes song in form artist-title from either arguments or stdin then attempts to locate
-# a matching file and play it.
+# Takes song name - format: Artist (arg 1) and Title (arg 2) - and attempts to locate and play a matching local file.
 
-artist_title="$@"
-if [[ "$artist_title" = '' ]]; then
-    while read artist_title; do
-        echo "$artist_title"
-    done
-fi
+artist="$1"
+title="$2"
 
-song_artist="$(basename "$artist_title" | awk -F- '{print $1}')"
-song_title="$(basename "$artist_title" | awk -F- '{print $2}')"
-underscore_artist="$(echo "$song_artist" | sed 's/ /_/g')"
-underscore_title="$(echo "$song_title" | sed 's/ /_/g')"
+underscore_artist="$(echo "$artist" | sed 's/ /_/g')"
+underscore_title="$(echo "$title" | sed 's/ /_/g')"
 
 echo -e '\nFiles matching that song title:'
 
 counter=0
-readarray files < <(find ~/music/collection/ -ipath "*$song_artist*$song_title*.mp3" \
-                                             -o -ipath "*$song_artist*$song_title*.flac" \
+readarray files < <(find ~/music/collection/ -ipath "*$artist*$title*.mp3" \
+                                             -o -ipath "*$artist*$title*.flac" \
                                              -o -ipath "*$underscore_artist*$underscore_title*.mp3" \
                                              -o -ipath "*$underscore_artist*$underscore_title*.flac")
     for file in "${files[@]}"

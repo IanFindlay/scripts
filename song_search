@@ -2,9 +2,9 @@
 
 # Searches the contents of all of the files in my lyrics directory for the
 # argument word or phrase and prints the name of any matches (Artist - Title)
-# The -p(lay) argument allows you to choose which song to play, if there are
-# multiple matches, and runs the play_song script to try to find and play the
-# appropriate local file.
+# The -p(lay) argument runs the play_song script (which searches for an appropriate
+# local file to play and plays it) and means that if multiple lyric matches are found
+# you will be prompted to choose between them.
 
 if [ "$1" = "-p" ] ; then
     shift
@@ -40,4 +40,8 @@ else
     selected_song=${matches["$chosen_index"]}
 fi
 
-play_song "$(basename "$selected_song")"
+artist_title="$(basename "$selected_song")"
+artist="$(echo "$artist_title" | awk  -F- '{print $1}')"
+title="$(echo "$artist_title" | awk  -F- '{print $2}')"
+
+play_song "$artist" "$title"
