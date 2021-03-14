@@ -35,6 +35,9 @@ Allows me to map my media controls to both cmus (which takes priority) and mpv (
 ### otpmenu
 Essentially [passmenu](https://git.zx2c4.com/password-store/tree/contrib/dmenu/passmenu) for [pass-otp](https://github.com/tadfisher/pass-otp) - allows me to use dmenu to copy otp codes stored in pass to the clipboard. Heavily based upon [Alwyn Kik's modifications to passmenu](https://gist.github.com/Alveel/d26c3b524d785af6fb0037394dd1f25e) as I simply adapted it to the specifics of my setup.
 
+### play_song
+Given two arguments, artist and song title, it will attempt to 'find' a file that matches the criteria and play it with mpv. If multiple possibilities are found it will display them all and prompt for a selection.
+
 ### podentr, poddown
 Based on [this Luke Smith video](https://videos.lukesmith.xyz/videos/watch/e67a4d63-b473-4e23-8c07-138351fcc69d) - Improves upon Newsboats podcast downloading by monitoring the queue file (podentr) and downloading podcasts automatically (poddown) without having to open podboat.
 
@@ -45,7 +48,7 @@ Uses transmission-remote to remove any torrents that have seeded to or beyond a 
 Another [Luke Smith video](https://videos.lukesmith.xyz/videos/watch/a99d48a3-0960-4e45-879c-637df1c1270e) inspired script, simply uses xwallpaper to set the desktop background either to an already set file, the file supplied as an argument or a random file in a directory passed as an argument.
 
 ### song_search
-Uses grep to search the directory with my lyrics files in - as mentioned in the update_current_tract etc description above - for the word/words that I pass as the argument(s) and prints the matches in "Artist - Title" format.
+Uses grep to search the directory with my lyrics files in (as mentioned in the update_current_track etc description above) for the word/words that I pass as the argument(s) and prints the matches in "Artist - Title" format. Can be given an argument -p(lay) which means it will, should it find a matching song, call the play_song script with the artist and title as arguments or, if multiple possibilities are found, will prompt for a selection between them prior to the call.
 
 ### torrent\_add
 Adds a magnet link via transmission-remote. Starts transmission-daemon if required.
