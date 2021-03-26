@@ -11,3 +11,5 @@ if [ "$(transmission-remote -a "$@" | grep "success")" ] ; then
 else
     notify-send -t 2000 "Torrent failed."
 fi
+
+kill -38 $(pidof dwmblocks)
