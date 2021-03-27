@@ -39,3 +39,4 @@ if (( "$num_removed" == "$id_count" )) ; then
 fi
     
 notify-send -t 2000 "$message"
+kill -38 $(pidof dwmblocks)
