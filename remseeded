@@ -4,12 +4,14 @@
 
 destroy_daemon () {
     transmission-remote --exit > /dev/null
+    sleep 3
 }
 
 torrent_ids=$(transmission-remote --list | sed -e '1d;$d;s/^ *//' | cut -f1 -d' ')
 if [[ ! "$torrent_ids" ]] ; then
     notify-send -t 2000 "No torrents... Destroying Daemon"
     destroy_daemon
+    kill -38 $(pidof dwmblocks)
     exit 0
 fi
 
