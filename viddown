@@ -3,7 +3,7 @@
 # Downloads videos through youtube-dl with notifications
 
 url="$1"
-name=$(youtube-dl --get-filename "$url" | grep -o '[^/]*$')
-id_num=$(tsp youtube-dl "$url")
+name=$(yt-dlp --get-filename "$url" | grep -o '[^/]*$')
+id_num=$(tsp yt-dlp "$url")
 notify-send -t 2000 "$name enqueued"
 tsp -D "$id_num" notify-send -t 2000 "$name downloaded"
